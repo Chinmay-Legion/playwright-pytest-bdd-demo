@@ -1,0 +1,25 @@
+[project]
+name = "playwright-demo"
+version = "0.1.0"
+description = "BDD test automation with Playwright and pytest-bdd"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "playwright==1.58.0",
+    "pytest==9.0.3",
+    "pytest-bdd==8.1.0",
+    "pytest-html==4.2.0",
+    "pytest-playwright==0.7.2",
+]
+
+[tool.pytest.ini_options]
+# bdd_features_base_dir: steps can use scenarios("file.feature") without path prefixes
+bdd_features_base_dir = "tests"
+addopts = "-v --html=reports/report.html --self-contained-html"
+markers = [
+    "smoke: critical path checks — run before every deployment",
+    "regression: full regression suite",
+    "sauce: SauceDemo application tests",
+    "pta: PracticeTestAutomation site tests",
+    "login: authentication tests",
+]
