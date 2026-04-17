@@ -8,11 +8,11 @@ Feature: PracticeTestAutomation Login
     Given the user is on the PTA login page
     # And I have 5 products
 
-  @smoke
+  @smoke @pta
   Scenario: Successful login with valid credentials
     When the user logs in with username "student" and password "Password123"
     Then the user should land on the login successful page
-    # And the total should be 5
+    And the total should be 5
 
   # The expected_error column drives the assertion — one step replaces two separate Then steps
   @regression

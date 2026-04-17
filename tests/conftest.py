@@ -37,4 +37,5 @@ def login_with_credentials(login_page, username: str, password: str) -> None:
 
 @then(parsers.parse('there are {items} items in the {section} section'))
 def step_impl(items,section):
-    print(items,section)
+    print(items)
+    print(section)
