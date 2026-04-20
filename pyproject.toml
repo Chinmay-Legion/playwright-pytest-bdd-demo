@@ -22,5 +22,7 @@ markers = [
     "sauce: SauceDemo application tests",
     "pta: PracticeTestAutomation site tests",
     "login: authentication tests",
-    "neg"
+    "neg",
+    "regression_sd",
+    "regression_pta"
 ]

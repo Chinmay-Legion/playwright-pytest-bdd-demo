@@ -8,16 +8,22 @@ Feature: PracticeTestAutomation Login
     Given the user is on the PTA login page
     # And I have 5 products
 
-  @smoke @pta
+  @pta
   Scenario: Successful login with valid credentials
-    When the user logs in with username "student" and password "Password123"
+    When the user logs in with username student and password Password123
     Then the user should land on the login successful page
-    And the total should be 5
+    Then the submit button is enabled
+    # Then the editor is not in the washroom
+    # Then the user presses on the "button"
+    # And the user is not in his right mind
+
+
+    # And I have 6 products
 
   # The expected_error column drives the assertion — one step replaces two separate Then steps
-  @regression
+  @regression_pta
   Scenario Outline: Login failure — <error_type>
-    When the user logs in with username "<username>" and password "<password>"
+    When the user logs in with username <username> and password <password>
     Then the error message should read "<expected_error>"
 
     Examples: Credential error scenarios

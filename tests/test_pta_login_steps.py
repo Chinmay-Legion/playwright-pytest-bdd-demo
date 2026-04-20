@@ -34,8 +34,5 @@ def verify_successful_login(page: Page) -> None:
 @then(parsers.re(r'the error message should read "(?P<expected_error>[^"]+)"'))
 def verify_error_message(login_page: PtaLoginPage, expected_error: str) -> None:
     login_page.assert_error_text(expected_error)
+    login_page.assert_error_text
 
-# Using parsers.re
-@given(parsers.re(r'I have (?P<count>\d+) products'))
-def step_impl(count):
-    pass
