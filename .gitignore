@@ -164,5 +164,8 @@ cython_debug/
 # Playwright-Demo
 report.html
 assets/
+reports/
+test-results/
+allure-report/
 .claude
 .vscode

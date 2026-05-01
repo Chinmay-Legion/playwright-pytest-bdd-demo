@@ -11,7 +11,7 @@ class SauceLoginPage(BasePage):
         self.username_input = page.locator("#user-name")
         self.password_input = page.locator("#password")
         self.login_btn = page.locator("#login-button")
-        self.error_container = page.locator(".error-button")
+        self.error_message = page.locator("[data-test='error']")
 
     def navigate(self) -> None:
         super().navigate(_URL)
@@ -23,4 +23,4 @@ class SauceLoginPage(BasePage):
         self.login_btn.click()
 
     def assert_error_visible(self) -> None:
-        expect(self.error_container).to_be_visible()
+        expect(self.error_message).to_be_visible()

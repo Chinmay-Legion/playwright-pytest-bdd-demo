@@ -1,84 +1,50 @@
+from pathlib import Path
+
+import allure
 import pytest
-from pytest_bdd import when,then, parsers,step
-from playwright.sync_api import BrowserContext
+from pytest_bdd import parsers, when
 
 
-# ── HTML report title ────────────────────────────────────────────────────────
 def pytest_html_report_title(report):
     report.title = "BDD Automation Report"
 
 
-# ── Browser context: 1920×1080 viewport for all tests ───────────────────────
+@pytest.fixture(scope="session")
+def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
+    browser_args = list(browser_type_launch_args.get("args", []))
+
+    if "--start-maximized" not in browser_args:
+        browser_args.append("--start-maximized")
+
+    return {**browser_type_launch_args, "args": browser_args}
+
+
 @pytest.fixture(scope="session")
 def browser_context_args(browser_context_args: dict) -> dict:
-    return {**browser_context_args, "viewport": {"width": 1920, "height": 1080}}
+    return {**browser_context_args, "no_viewport": True}
 
 
-# ── Shared @when step ────────────────────────────────────────────────────────
-#
-# WHY it lives here instead of each step file:
-#   Both features use identical step text. Defining it once in conftest.py
-#   makes it available to every scenario without duplication or shadowing.
-#
-# HOW it works with target_fixture:
-#   The @given step in each step file uses target_fixture="login_page" to
-#   return the correct page object (SauceLoginPage or PtaLoginPage).
-#   pytest-bdd injects that object here as `login_page`.
-#
-# REGEX breakdown:
-#   (?P<username>[^"]*) — named group; [^"]* matches any chars except a quote
-#                         (zero-or-more so empty strings are valid too)
-#   (?P<password>[^"]*) — same for password
-#   Named groups become function parameters automatically.
-#
-@when(parsers.re(r'the user logs in with username (?P<username>[^"]*) and password (?P<password>[^"]*)'))
+@pytest.fixture(autouse=True)
+def attach_playwright_traces_to_allure(output_path: str):
+    yield
+
+    for trace_path in sorted(Path(output_path).glob("trace*.zip")):
+        allure.attach.file(
+            str(trace_path),
+            name=trace_path.name,
+            attachment_type="application/zip",
+            extension="zip",
+        )
+
+
+# Shared by both login features. Each feature's Given step returns a site-specific
+# page object as the "login_page" fixture, so this action stays reusable.
+@when(parsers.re(r'the user logs in with username "(?P<username>[^"]*)" and password "(?P<password>[^"]*)"'))
 def login_with_credentials(login_page, username: str, password: str) -> None:
+#     page.screencast.show_chapter("Login With Credentials",
+#     description=f"Username - {username} , Password - {password}",
+#     duration=500,
+# )
+#     page.screencast.show_overlay('<div style="color: red">Whats up</div>')
+#     page.screencast.show_actions(position="top-right")
     login_page.login(username, password)
-
-@then(parsers.parse('there are {items} items in the {section} section'))
-def step_impl(items,section):
-    print(items)
-    print(section)
-
-
-
-from functools import partial
-
-EXTRA_TYPES = {"Number": int, "Price": float}
-parse_typed = partial(parsers.cfparse, extra_types=EXTRA_TYPES)
-
-@then(parse_typed("the user pays {amount:Number}"))
-def step_when_user_pays(amount): 
-    print(f"AMOUNT IS {amount}")
-
-
-EXTRA_TYPES = {"Number": int, "Price": float}
-
-@step(
-    parsers.cfparse("the order total is {amount:Number}", extra_types=EXTRA_TYPES),
-    target_fixture="order_amount"
-)
-def step_given_order_total(amount):
-    print(f"TOTAL IS {amount}")
-
-
-# Using parsers.re
-@step(parsers.re(r'I have (?P<count>five|six) products'))
-def step_impl(count):
-    print(f"I HAVE THIS MANY PRODUCTS {count}")
-
-
-@step(parsers.re(r'the (?P<button>submit|cancel|reset) button is (?P<state>enabled|disabled)'))
-def step_when_button_is_state(page, button, state):
-    print("2")
-
-@step(parsers.re(r'the (?P<user>admin|editor|poster) (?P<bool>is|is not) in the (?P<place>office|canteen|washroom)'))
-def step_when_button_is_state(page, button, state):
-    print("2")
-
-
-
-
-@then(parsers.parse("the user presses on the {button}"))
-def step_the_user_presses_on_the_button(button):
-    raise NotImplementedError("step not implemented")

@@ -5,7 +5,8 @@ description = "BDD test automation with Playwright and pytest-bdd"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "playwright==1.58.0",
+    "allure-pytest-bdd==2.16.0",
+    "playwright==1.59.0",
     "pytest==9.0.3",
     "pytest-bdd==8.1.0",
     "pytest-html==4.2.0",
@@ -13,16 +14,28 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-# bdd_features_base_dir: steps can use scenarios("file.feature") without path prefixes
-bdd_features_base_dir = "tests"
-addopts = "-v --html=reports/report.html --self-contained-html"
+# Step files can use scenarios("file.feature") without path prefixes.
+bdd_features_base_dir = "tests/features"
+testpaths = ["tests/steps"]
+addopts = [
+    "-v",
+    "--html=reports/html/report.html",
+    "--self-contained-html",
+    "--alluredir=reports/allure-results",
+    "--clean-alluredir",
+    "--output=reports/playwright-artifacts",
+    "--tracing=on",
+    "--video=on",
+    "--screenshot=only-on-failure",
+]
 markers = [
-    "smoke: critical path checks — run before every deployment",
+    "smoke: critical path checks to run before every deployment",
     "regression: full regression suite",
     "sauce: SauceDemo application tests",
     "pta: PracticeTestAutomation site tests",
+    "learning: examples that teach pytest-bdd syntax without using a browser",
+    "parsers: parser examples for string, parse, regex, and cfparse steps",
     "login: authentication tests",
-    "neg",
-    "regression_sd",
-    "regression_pta"
+    "negative: negative-path scenarios",
+    "smoke_pta: Smoke testing for PTA"
 ]

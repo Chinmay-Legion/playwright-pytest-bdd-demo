@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect  # was incorrectly async_api
+from playwright.sync_api import Page, expect
 
 from pages.base_page import BasePage
 
@@ -12,3 +12,7 @@ class PtaSuccessfulPage(BasePage):
     def assert_login_successful(self) -> None:
         expect(self.success_heading).to_be_visible()
         expect(self.logout_button).to_be_visible()
+
+    def click_logout_button(self) -> None:
+        # expect(self.logout_button).to_be_visible()
+        self.logout_button.click()
