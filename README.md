@@ -77,6 +77,21 @@ Install Playwright browsers:
 uv run playwright install
 ```
 
+Install Java and the Java-based Allure 2 command-line tool:
+
+```powershell
+scoop install openjdk
+scoop install allure
+```
+
+Verify Allure is available:
+
+```powershell
+allure --version
+```
+
+This project uses the Java-based Allure 2 CLI. It has behaved more reliably for this pytest-bdd demo than the newer npm-based Allure 3 CLI, especially while experimenting with broken scenarios and retry-style runs.
+
 ## Run Tests
 
 Run the full test suite:
@@ -217,7 +232,7 @@ Allure results are created here:
 reports/allure-results/
 ```
 
-To view the report:
+To quickly view the report:
 
 ```powershell
 allure serve reports\allure-results
@@ -225,16 +240,23 @@ allure serve reports\allure-results
 
 This starts a local Allure server and opens the report in your browser.
 
-If `allure` is not recognized, install the Allure command-line tool first:
+You can also generate a static report first:
 
 ```powershell
-npm install -g allure
+allure generate reports\allure-results -o reports\allure-report --clean
 ```
 
-After installing, try again:
+Then open the generated report:
 
 ```powershell
-allure serve reports\allure-results
+allure open reports\allure-report
+```
+
+If `allure` is not recognized, install Java and Allure with Scoop:
+
+```powershell
+scoop install openjdk
+scoop install allure
 ```
 
 Playwright trace files are also attached to the matching Allure test result.
@@ -295,6 +317,8 @@ The trace viewer lets you inspect:
 This is usually the best debugging tool when a Playwright test fails.
 
 The same `trace.zip` file is attached to the matching Allure test result, so you can also download it directly from the Allure report.
+
+Do not manually edit or format files inside `reports/allure-results/`. These JSON files are generated machine output, and changing them can make Allure reports unreliable.
 
 ## Open Playwright Videos
 

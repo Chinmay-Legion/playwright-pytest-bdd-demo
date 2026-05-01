@@ -11,6 +11,7 @@ dependencies = [
     "pytest-bdd==8.1.0",
     "pytest-html==4.2.0",
     "pytest-playwright==0.7.2",
+    "pytest-rerunfailures==16.1",
     "pytest-xdist==3.8.0",
 ]
 
@@ -20,13 +21,14 @@ bdd_features_base_dir = "tests/features"
 testpaths = ["tests/steps"]
 addopts = [
     "-v",
+    "--tb=short",
     "--html=reports/html/report.html",
     "--self-contained-html",
     "--alluredir=reports/allure-results",
     "--clean-alluredir",
     "--output=reports/playwright-artifacts",
-    "--tracing=off",
-    "--video=off",
+    "--tracing=on",
+    "--video=on",
     "--screenshot=only-on-failure",
 ]
 markers = [
