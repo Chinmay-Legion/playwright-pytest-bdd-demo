@@ -11,6 +11,7 @@ dependencies = [
     "pytest-bdd==8.1.0",
     "pytest-html==4.2.0",
     "pytest-playwright==0.7.2",
+    "pytest-xdist==3.8.0",
 ]
 
 [tool.pytest.ini_options]
@@ -24,18 +25,25 @@ addopts = [
     "--alluredir=reports/allure-results",
     "--clean-alluredir",
     "--output=reports/playwright-artifacts",
-    "--tracing=on",
-    "--video=on",
+    "--tracing=off",
+    "--video=off",
     "--screenshot=only-on-failure",
 ]
 markers = [
     "smoke: critical path checks to run before every deployment",
     "regression: full regression suite",
     "sauce: SauceDemo application tests",
+    "inventory: inventory page tests",
+    "cart: cart page tests",
+    "checkout: checkout flow tests",
+    "e2e: end-to-end tests",
     "pta: PracticeTestAutomation site tests",
+    "table: PracticeTestAutomation table tests",
     "learning: examples that teach pytest-bdd syntax without using a browser",
     "parsers: parser examples for string, parse, regex, and cfparse steps",
+    "datatable: data table examples for pytest-bdd",
     "login: authentication tests",
     "negative: negative-path scenarios",
-    "smoke_pta: Smoke testing for PTA"
+    "smoke_pta: Smoke testing for PTA",
+    "smoke_sd: Smoke testing for SauceDemo",
 ]

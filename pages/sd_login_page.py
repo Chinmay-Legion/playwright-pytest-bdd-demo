@@ -2,10 +2,12 @@ from playwright.sync_api import Page, expect
 
 from pages.base_page import BasePage
 
-_URL = "https://www.saucedemo.com/v1/"
+_URL = "https://www.saucedemo.com/"
 
 
 class SauceLoginPage(BasePage):
+    """Login page object for the current SauceDemo app."""
+
     def __init__(self, page: Page) -> None:
         super().__init__(page)
         self.username_input = page.locator("#user-name")
@@ -16,8 +18,9 @@ class SauceLoginPage(BasePage):
     def navigate(self) -> None:
         super().navigate(_URL)
 
-    # Single action: fill credentials AND click — the full "login" user action
     def login(self, username: str, password: str) -> None:
+        """Fill credentials and submit the login form."""
+
         self.username_input.fill(username)
         self.password_input.fill(password)
         self.login_btn.click()

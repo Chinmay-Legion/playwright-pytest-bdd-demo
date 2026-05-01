@@ -15,7 +15,7 @@ The goal is not to build a large automation framework. The goal is to keep every
 
 This project uses two small public demo websites:
 
-- SauceDemo: https://www.saucedemo.com/v1/
+- SauceDemo: https://www.saucedemo.com/
 - Practice Test Automation: https://practicetestautomation.com/practice-test-login/
 
 These sites are intentionally simple, which makes them good for learning selectors, page objects, fixtures, pytest markers, pytest-bdd step definitions, and reporting.
