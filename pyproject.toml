@@ -34,7 +34,11 @@ addopts = [
 markers = [
     "smoke: critical path checks to run before every deployment",
     "regression: full regression suite",
+    "orangehrm: OrangeHRM demo application tests",
     "sauce: SauceDemo application tests",
+    "auth: authentication tests",
+    "pim: OrangeHRM PIM module tests",
+    "leave: OrangeHRM Leave module tests",
     "inventory: inventory page tests",
     "cart: cart page tests",
     "checkout: checkout flow tests",

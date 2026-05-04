@@ -17,6 +17,7 @@ This project uses two small public demo websites:
 
 - SauceDemo: https://www.saucedemo.com/
 - Practice Test Automation: https://practicetestautomation.com/practice-test-login/
+- OrangeHRM: https://opensource-demo.orangehrmlive.com/web/index.php/
 
 These sites are intentionally simple, which makes them good for learning selectors, page objects, fixtures, pytest markers, pytest-bdd step definitions, and reporting.
 
@@ -30,13 +31,22 @@ pages/
   pta_login_page.py
   pta_successful_page.py
 
+orangehrm/
+  models/
+  components/
+  pages/
+  services/
+  workflows/
+
 tests/
   conftest.py
   features/
+    orangehrm/
     saucedemo_login.feature
     practice_test_automation_login.feature
     parser_examples.feature
   steps/
+    orangehrm/
     test_saucedemo_login_steps.py
     test_practice_test_automation_login_steps.py
     test_parser_example_steps.py
@@ -62,6 +72,62 @@ When the user logs in with username "student" and password "Password123"
 ```
 
 `pyproject.toml` contains project dependencies and pytest configuration.
+
+## OrangeHRM Layered Demo
+
+The OrangeHRM demo is the medium-sized example for scalable pytest-bdd design.
+
+It uses this separation:
+
+```text
+Feature files
+  describe business behavior in Gherkin
+
+Step definitions
+  translate Gherkin into workflow calls
+
+Workflow layer
+  composes business journeys such as login, employee search, and leave filtering
+
+Service layer
+  exposes reusable domain actions such as authenticate, navigate, search PIM, and filter Leave
+
+POM and components
+  contain Playwright locators, page actions, reusable form controls, table helpers, and navigation widgets
+```
+
+The OrangeHRM code lives under:
+
+```text
+orangehrm/
+```
+
+The BDD files live under:
+
+```text
+tests/features/orangehrm/
+tests/steps/orangehrm/
+```
+
+Notice that `tests/steps/orangehrm/test_orangehrm_business_steps.py` loads multiple OrangeHRM feature files. This is intentional. The point is to show that enterprise pytest-bdd suites should not grow by copying large step files for every feature. The reusable behavior should grow in workflows, services, page objects, components, and typed models.
+
+The nested OrangeHRM `conftest.py` demonstrates fixture chaining:
+
+```text
+page
+  -> page objects
+  -> services
+  -> workflows
+  -> BDD steps
+```
+
+OrangeHRM also uses dataclasses for test data:
+
+```text
+OrangeHrmUser
+EmployeeSearchCriteria
+LeaveFilter
+```
 
 ## Setup
 
@@ -128,6 +194,30 @@ Run negative login tests:
 
 ```powershell
 uv run pytest -m negative
+```
+
+Run only OrangeHRM tests:
+
+```powershell
+uv run pytest -m orangehrm
+```
+
+Run only OrangeHRM authentication tests:
+
+```powershell
+uv run pytest -m "orangehrm and auth"
+```
+
+Run only OrangeHRM PIM tests:
+
+```powershell
+uv run pytest -m "orangehrm and pim"
+```
+
+Run only OrangeHRM Leave tests:
+
+```powershell
+uv run pytest -m "orangehrm and leave"
 ```
 
 ## Debug Tests With PWDEBUG
@@ -197,16 +287,23 @@ videos:      on
 screenshots: only on failure
 ```
 
-The browser is also configured to start maximized instead of using a fixed `1920x1080` viewport.
+The browser sizing is configured differently for headed and non-headed runs.
 
-This is done in `tests/conftest.py` with:
+For normal non-headed runs, Playwright uses a fixed desktop viewport:
+
+```text
+viewport: 1920x1080
+screen:   1920x1080
+```
+
+For headed runs, Playwright starts the browser maximized and uses the available browser window size:
 
 ```text
 --start-maximized
 no_viewport=True
 ```
 
-That means Playwright does not force an artificial viewport size. The page uses the available browser window size.
+This helps avoid a common UI automation problem where a site renders a smaller responsive layout in headless mode but a desktop layout in headed mode.
 
 ## Open The HTML Report
 

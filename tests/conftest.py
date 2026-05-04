@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 import allure
 import pytest
@@ -13,15 +14,24 @@ def pytest_html_report_title(report):
 def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
     browser_args = list(browser_type_launch_args.get("args", []))
 
-    if "--start-maximized" not in browser_args:
+    if browser_type_launch_args.get("headless") is False and "--start-maximized" not in browser_args:
         browser_args.append("--start-maximized")
 
     return {**browser_type_launch_args, "args": browser_args}
 
 
 @pytest.fixture(scope="session")
-def browser_context_args(browser_context_args: dict) -> dict:
-    return {**browser_context_args, "no_viewport": True}
+def browser_context_args(browser_context_args: dict, pytestconfig) -> dict:
+    headed = pytestconfig.getoption("--headed") or os.getenv("PWDEBUG") == "1"
+
+    if headed:
+        return {**browser_context_args, "no_viewport": True}
+
+    return {
+        **browser_context_args,
+        "viewport": {"width": 1920, "height": 1080},
+        "screen": {"width": 1920, "height": 1080},
+    }
 
 
 @pytest.fixture(autouse=True)
